@@ -1,0 +1,11 @@
+services:
+  db:
+    container_name: match-picker-db
+    image: postgres
+    restart: always
+    ports:
+      - 25432:5432
+    environment:
+      POSTGRES_USER: mpadmin
+      POSTGRES_PASSWORD: mpadmin
+      POSTGRES_DB: matchpicker
