@@ -10,7 +10,7 @@ type Team struct {
 	Abbr       *string   `json:"abbr" gorm:"not null"`
 	Conference *string   `json:"conference"`
 	Division   *string   `json:"division"`
-	LeagueID   *string   `json:"leagueId" gorm:"type:uuid;foreignKey"`
+	LeagueID   *string   `json:"leagueId" gorm:"type:uuid"`
 	CreatedAt  time.Time `json:"createdAt" gorm:"autoCreateTime:nano"`
 	UpdatedAt  time.Time `json:"updatedAt" gorm:"autoUpdateTime:nano"`
 }

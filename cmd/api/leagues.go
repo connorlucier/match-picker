@@ -14,10 +14,10 @@ func getLeagues(c *gin.Context) {
 	c.JSON(http.StatusOK, leagues)
 }
 
-func getLeague(c *gin.Context) {
+func getLeagueById(c *gin.Context) {
 	var league model.League
 	id := c.Param("leagueId")
-	db.Limit(1).Find(&league, "id = ?", id)
+	db.Limit(1).Preload("Teams").Find(&league, "id = ?", id)
 
 	if league.ID == nil {
 		c.Status(http.StatusNoContent)
@@ -30,6 +30,11 @@ func getLeague(c *gin.Context) {
 func createLeague(c *gin.Context) {
 	var league model.League
 	readBody(c, &league)
+
+	if league.Teams == nil {
+		league.Teams = []model.Team{}
+	}
+
 	db.Create(&league)
 
 	if league.ID == nil {
@@ -38,4 +43,10 @@ func createLeague(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, league)
+}
+
+func deleteLeagueById(c *gin.Context) {
+	id := c.Param("leagueId")
+	db.Select("Teams").Delete(&model.League{ID: &id})
+	c.Status(http.StatusNoContent)
 }

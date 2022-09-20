@@ -17,12 +17,14 @@ func main() {
 	leagues := r.Group("/leagues")
 	leagues.POST("/", createLeague)
 	leagues.GET("/", getLeagues)
-	leagues.GET("/:leagueId", getLeague)
+	leagues.GET("/:leagueId", getLeagueById)
+	leagues.DELETE("/:leagueId", deleteLeagueById)
 
 	teams := leagues.Group("/:leagueId/teams")
 	teams.POST("/", createTeam)
 	teams.GET("/", getTeamsByLeague)
-	teams.GET("/:teamId", getTeamInLeague)
+	teams.GET("/:teamId", getTeamById)
+	teams.DELETE("/:teamId", deleteTeamById)
 
 	r.Run()
 }
