@@ -9,13 +9,21 @@ import (
 
 func getMatches(c *gin.Context) {
 	seasonId := c.Param("seasonId")
+	after, before := getDateRangeParams(c)
 	page, pageSize, offset := getPaginationParams(c)
 
 	var matches []model.Match
 	var totalRecords int64
 
-	db.Limit(pageSize).Offset(offset).Order("starts_at ASC").Find(&matches, "season_id = ?", seasonId)
-	db.Model(&model.Match{}).Where("season_id = ?", seasonId).Count(&totalRecords)
+	db.Limit(pageSize).Offset(offset).Order("starts_at ASC").
+		Where("? OR starts_at >= ?", after == nil, after).
+		Where("? OR starts_at <= ?", before == nil, before).
+		Find(&matches, "season_id = ?", seasonId)
+	db.Model(&model.Match{}).
+		Where("season_id = ?", seasonId).
+		Where("? OR starts_at >= ?", after == nil, after).
+		Where("? OR starts_at <= ?", before == nil, before).
+		Count(&totalRecords)
 
 	c.JSON(http.StatusOK, model.Paginated[model.Match]{
 		Page:         page,

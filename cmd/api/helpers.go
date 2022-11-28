@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
@@ -54,4 +55,44 @@ func getPaginationParams(c *gin.Context) (int, int, int) {
 	}
 
 	return page, pageSize, (page - 1) * pageSize
+}
+
+func getDateRangeParams(c *gin.Context) (*time.Time, *time.Time) {
+	var after, before *time.Time
+	afterParam := c.Query("after")
+	beforeParam := c.Query("before")
+
+	if afterParam == "" {
+		after = nil
+	} else {
+		afterTime, err := time.Parse("2006-01-02", afterParam)
+
+		if err != nil {
+			afterTime, _ = time.Parse(time.RFC3339, afterParam)
+		}
+
+		if afterTime.IsZero() {
+			after = nil
+		} else {
+			after = &afterTime
+		}
+	}
+
+	if beforeParam == "" {
+		before = nil
+	} else {
+		beforeTime, err := time.Parse("2006-01-02", beforeParam)
+
+		if err != nil {
+			beforeTime, _ = time.Parse(time.RFC3339, beforeParam)
+		}
+
+		if beforeTime.IsZero() {
+			before = nil
+		} else {
+			before = &beforeTime
+		}
+	}
+
+	return after, before
 }
