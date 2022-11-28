@@ -9,12 +9,12 @@ import (
 
 func allHealthChecks(c *gin.Context) {
 	checkDb()
-	c.JSON(http.StatusOK, "Healthy")
+	healthy(c)
 }
 
 func dbHealthCheck(c *gin.Context) {
 	checkDb()
-	c.JSON(http.StatusOK, "Healthy")
+	healthy(c)
 }
 
 func checkDb() {
@@ -27,4 +27,10 @@ func checkDb() {
 	if !ok {
 		panic(errors.New("failed to connect to db"))
 	}
+}
+
+func healthy(c *gin.Context) {
+	c.JSON(http.StatusOK, map[string]string{
+		"status": "healthy",
+	})
 }

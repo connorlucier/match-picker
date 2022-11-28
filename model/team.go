@@ -1,8 +1,6 @@
 package model
 
-import (
-	"time"
-)
+import "time"
 
 type Team struct {
 	ID         *string   `json:"id" gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`

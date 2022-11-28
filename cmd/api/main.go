@@ -22,9 +22,21 @@ func main() {
 
 	teams := leagues.Group("/:leagueId/teams")
 	teams.POST("/", createTeam)
-	teams.GET("/", getTeamsByLeague)
+	teams.GET("/", getTeamsByLeagueId)
 	teams.GET("/:teamId", getTeamById)
 	teams.DELETE("/:teamId", deleteTeamById)
+
+	seasons := leagues.Group("/:leagueId/seasons")
+	seasons.POST("/", createSeason)
+	seasons.GET("/", getSeasonsByLeagueId)
+	seasons.GET("/:seasonId", getSeasonById)
+	seasons.DELETE("/:seasonId", deleteSeasonById)
+
+	matches := seasons.Group("/:seasonId/matches")
+	matches.POST("/", createMatch)
+	matches.GET("/", getMatches)
+	matches.GET("/:matchId", getMatchById)
+	matches.DELETE("/:matchId", deleteMatchById)
 
 	r.Run()
 }

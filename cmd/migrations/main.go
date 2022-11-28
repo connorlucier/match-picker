@@ -16,6 +16,8 @@ func main() {
 	db.Exec(`create extension if not exists "uuid-ossp";`)
 	tryMigrate(db, model.Team{})
 	tryMigrate(db, model.League{})
+	tryMigrate(db, model.Season{})
+	tryMigrate(db, model.Match{})
 }
 
 func tryMigrate(db *gorm.DB, t interface{}) {

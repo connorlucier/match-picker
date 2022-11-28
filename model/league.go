@@ -9,6 +9,7 @@ type League struct {
 	Sport     *string   `json:"sport" gorm:"not null"`
 	Level     *string   `json:"level" gorm:"not null"`
 	Teams     []Team    `json:"teams"`
+	Seasons   []Season  `json:"seasons"`
 	CreatedAt time.Time `json:"createdAt" gorm:"autoCreateTime:nano"`
 	UpdatedAt time.Time `json:"updatedAt" gorm:"autoUpdateTime:nano"`
 }

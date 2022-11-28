@@ -8,16 +8,25 @@ import (
 )
 
 func getLeagues(c *gin.Context) {
-	// TODO pagination
+	page, pageSize, offset := getPaginationParams(c)
 	var leagues []model.League
-	db.Find(&leagues)
-	c.JSON(http.StatusOK, leagues)
+	var totalRecords int64
+
+	db.Limit(pageSize).Offset(offset).Order("name, created_at DESC").Find(&leagues)
+	db.Model(&model.League{}).Count(&totalRecords)
+
+	c.JSON(http.StatusOK, model.Paginated[model.League]{
+		Page:         page,
+		PageSize:     pageSize,
+		TotalRecords: totalRecords,
+		Data:         leagues,
+	})
 }
 
 func getLeagueById(c *gin.Context) {
 	var league model.League
 	id := c.Param("leagueId")
-	db.Limit(1).Preload("Teams").Find(&league, "id = ?", id)
+	db.Limit(1).Preload("Teams").Preload("Seasons").Find(&league, "id = ?", id)
 
 	if league.ID == nil {
 		c.Status(http.StatusNoContent)

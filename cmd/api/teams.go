@@ -7,13 +7,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getTeamsByLeague(c *gin.Context) {
-	id := c.Param("leagueId")
+func getTeamsByLeagueId(c *gin.Context) {
+	leagueId := c.Param("leagueId")
+	page, pageSize, offset := getPaginationParams(c)
 
-	// TODO pagination
 	var teams []model.Team
-	db.Find(&teams, "league_id = ?", id)
-	c.JSON(http.StatusOK, teams)
+	var totalRecords int64
+
+	db.Limit(pageSize).Offset(offset).Order("name, created_at DESC").Find(&teams, "league_id = ?", leagueId)
+	db.Model(&model.Season{}).Where("league_id = ?", leagueId).Count(&totalRecords)
+
+	c.JSON(http.StatusOK, model.Paginated[model.Team]{
+		Page:         page,
+		PageSize:     pageSize,
+		TotalRecords: totalRecords,
+		Data:         teams,
+	})
 }
 
 func getTeamById(c *gin.Context) {
@@ -30,7 +39,9 @@ func getTeamById(c *gin.Context) {
 }
 
 func createTeam(c *gin.Context) {
+	leagueId := c.Param("leagueId")
 	var team model.Team
+	team.LeagueID = &leagueId
 	readBody(c, &team)
 	db.Create(&team)
 
