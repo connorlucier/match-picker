@@ -54,7 +54,17 @@ func createLeague(c *gin.Context) {
 	c.JSON(http.StatusCreated, league)
 }
 
-func deleteLeagueById(c *gin.Context) {
+func updateLeague(c *gin.Context) {
+	id := c.Param("leagueId")
+	var league model.League
+	readBody(c, &league)
+	league.ID = &id
+	db.Save(&league)
+
+	c.JSON(http.StatusOK, league)
+}
+
+func deleteLeague(c *gin.Context) {
 	id := c.Param("leagueId")
 	db.Select("Teams").Delete(&model.League{ID: &id})
 	c.Status(http.StatusNoContent)

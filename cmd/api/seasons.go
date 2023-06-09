@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getSeasonsByLeagueId(c *gin.Context) {
+func getSeasons(c *gin.Context) {
 	leagueId := c.Param("leagueId")
 	page, pageSize, offset := getPaginationParams(c)
 
@@ -35,7 +35,7 @@ func getSeasonById(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, &season)
+	c.JSON(http.StatusOK, season)
 }
 
 func createSeason(c *gin.Context) {
@@ -51,7 +51,17 @@ func createSeason(c *gin.Context) {
 	c.JSON(http.StatusCreated, season)
 }
 
-func deleteSeasonById(c *gin.Context) {
+func updateSeason(c *gin.Context) {
+	id := c.Param("seasonId")
+	var season model.Season
+	readBody(c, &season)
+	season.ID = &id
+	db.Save(&season)
+
+	c.JSON(http.StatusOK, season)
+}
+
+func deleteSeason(c *gin.Context) {
 	id := c.Param("seasonId")
 	db.Delete(&model.Season{}, "id = ?", id)
 	c.Status(http.StatusNoContent)

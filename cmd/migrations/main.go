@@ -18,6 +18,9 @@ func main() {
 	tryMigrate(db, model.League{})
 	tryMigrate(db, model.Season{})
 	tryMigrate(db, model.Match{})
+	tryMigrate(db, model.Pick{})
+	tryMigrate(db, model.User{})
+	tryMigrate(db, model.Group{})
 }
 
 func tryMigrate(db *gorm.DB, t interface{}) {
