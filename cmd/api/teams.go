@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getTeamsByLeagueId(c *gin.Context) {
+func getTeams(c *gin.Context) {
 	leagueId := c.Param("leagueId")
 	page, pageSize, offset := getPaginationParams(c)
 
@@ -35,7 +35,7 @@ func getTeamById(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, &team)
+	c.JSON(http.StatusOK, team)
 }
 
 func createTeam(c *gin.Context) {
@@ -51,6 +51,16 @@ func createTeam(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, team)
+}
+
+func updateTeam(c *gin.Context) {
+	id := c.Param("teamId")
+	var team model.Team
+	readBody(c, &team)
+	team.ID = &id
+	db.Save(&team)
+
+	c.JSON(http.StatusOK, team)
 }
 
 func deleteTeamById(c *gin.Context) {

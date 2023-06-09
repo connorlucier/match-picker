@@ -43,7 +43,7 @@ func getMatchById(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, &match)
+	c.JSON(http.StatusOK, match)
 }
 
 func createMatch(c *gin.Context) {
@@ -61,7 +61,17 @@ func createMatch(c *gin.Context) {
 	c.JSON(http.StatusCreated, match)
 }
 
-func deleteMatchById(c *gin.Context) {
+func updateMatch(c *gin.Context) {
+	id := c.Param("matchId")
+	var match model.Match
+	readBody(c, &match)
+	match.ID = &id
+	db.Save(&match)
+
+	c.JSON(http.StatusOK, match)
+}
+
+func deleteMatch(c *gin.Context) {
 	id := c.Param("matchId")
 	db.Delete(&model.Match{}, "id = ?", id)
 	c.Status(http.StatusNoContent)
